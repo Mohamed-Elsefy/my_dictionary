@@ -36,7 +36,7 @@ class ColorsWidget extends StatelessWidget {
   }
 
   Widget _getItemDesign(int index, BuildContext context) {
-    final writeCubit = context.watch<WriteDataCubit>();
+    final writeCubit = context.read<WriteDataCubit>();
 
     return InkWell(
       onTap: () => writeCubit.updateColorCode(_colorCodes[index]),

@@ -13,13 +13,20 @@ class ReadDataCubit extends Cubit<ReadDataState> {
   SortedBy sortedBy = SortedBy.time;
   SortingType sortingType = SortingType.descending;
 
-  void updateLanguageFilter(LanguageFilter languageFilter) =>
-      this.languageFilter = languageFilter;
+  void updateLanguageFilter(LanguageFilter languageFilter) {
+    this.languageFilter = languageFilter;
+    getWords();
+  }
 
-  void updateSortedBy(SortedBy sortedBy) => this.sortedBy = sortedBy;
+  void updateSortedBy(SortedBy sortedBy) {
+    this.sortedBy = sortedBy;
+    getWords();
+  }
 
-  void updateSortingType(SortingType sortingType) =>
-      this.sortingType = sortingType;
+  void updateSortingType(SortingType sortingType) {
+    this.sortingType = sortingType;
+    getWords();
+  }
 
   void getWords() {
     emit(ReadDataLoading());

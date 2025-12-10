@@ -1,26 +1,21 @@
 import 'package:flutter/material.dart';
 
 abstract class SafePadding {
-  static double topPadding(BuildContext context) =>
+  static double topP(BuildContext context) =>
       MediaQuery.of(context).padding.top;
 
-  static double bottomPadding(BuildContext context) =>
+  static double bottomP(BuildContext context) =>
       MediaQuery.of(context).padding.bottom;
 
-  static double leftPadding(BuildContext context) =>
+  static double leftP(BuildContext context) =>
       MediaQuery.of(context).padding.left;
 
-  static double rightPadding(BuildContext context) =>
+  static double rightP(BuildContext context) =>
       MediaQuery.of(context).padding.right;
 
-  static EdgeInsets allPadding(BuildContext context) =>
-      MediaQuery.of(context).padding;
+  static double horizP(BuildContext context, {double factor = 0.047}) =>
+      MediaQuery.sizeOf(context).width * factor;
 
-  static double horizontalPadding(
-    BuildContext context, {
-    double factor = 0.06,
-  }) => MediaQuery.sizeOf(context).width * factor;
-
-  static double verticalPadding(BuildContext context, {double factor = 0.04}) =>
+  static double vertP(BuildContext context, {double factor = 0.04}) =>
       MediaQuery.sizeOf(context).height * factor;
 }

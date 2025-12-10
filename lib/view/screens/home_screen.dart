@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_dictionary/core/constants/app_colors.dart';
+import 'package:my_dictionary/core/utils/safe_padding.dart';
 import 'package:my_dictionary/view/widgets/add_word_dialog.dart';
+import 'package:my_dictionary/view/widgets/custom_header.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -10,7 +12,10 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       floatingActionButton: _getFloatingActionButton(context),
       appBar: AppBar(title: const Text('Home')),
-      body: const Column(children: []),
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: SafePadding.horizP(context)),
+        child: const Column(children: [CustomHeader()]),
+      ),
     );
   }
 

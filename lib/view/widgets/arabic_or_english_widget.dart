@@ -28,7 +28,7 @@ class ArabicOrEnglishWidget extends StatelessWidget {
   }
 
   InkWell _getContainerDesign(BuildContext context, bool isArabic) {
-    final writeCubit = context.watch<WriteDataCubit>();
+    final writeCubit = context.read<WriteDataCubit>();
 
     return InkWell(
       onTap: () => writeCubit.updateIsArabic(isArabic),

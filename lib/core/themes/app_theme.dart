@@ -8,7 +8,7 @@ ThemeData appTheme() {
       backgroundColor: AppColors.black,
       foregroundColor: AppColors.white,
       centerTitle: true,
-      titleTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+      titleTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
     ),
     textTheme: const TextTheme(
       bodySmall: TextStyle(
@@ -20,6 +20,17 @@ ThemeData appTheme() {
         color: AppColors.white,
         fontSize: 18,
         fontWeight: FontWeight.w800,
+      ),
+
+      titleMedium: TextStyle(
+        color: AppColors.white,
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+      ),
+      titleLarge: TextStyle(
+        color: AppColors.white,
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
       ),
     ),
   );
