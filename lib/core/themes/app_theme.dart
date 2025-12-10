@@ -1,0 +1,26 @@
+import 'package:flutter/material.dart';
+import 'package:my_dictionary/core/constants/app_colors.dart';
+
+ThemeData appTheme() {
+  return ThemeData(
+    scaffoldBackgroundColor: AppColors.black,
+    appBarTheme: const AppBarTheme(
+      backgroundColor: AppColors.black,
+      foregroundColor: AppColors.white,
+      centerTitle: true,
+      titleTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+    ),
+    textTheme: const TextTheme(
+      bodySmall: TextStyle(
+        color: AppColors.white,
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      ),
+      bodyMedium: TextStyle(
+        color: AppColors.white,
+        fontSize: 18,
+        fontWeight: FontWeight.w800,
+      ),
+    ),
+  );
+}

@@ -11,3 +11,9 @@ final class WriteDataFailure extends WriteDataState {
 
   WriteDataFailure({required this.message});
 }
+
+final class UpdateColorState extends WriteDataState {}
+
+final class UpdateIsArabicState extends WriteDataState {}
+
+final class UpdateTextState extends WriteDataState {}

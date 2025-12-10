@@ -1,23 +1,32 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
-import 'package:my_dictionary/constants/app_strings.dart';
-import 'package:my_dictionary/constants/hive_keys.dart';
+import 'package:my_dictionary/core/constants/app_strings.dart';
+import 'package:my_dictionary/core/constants/hive_keys.dart';
 import 'package:my_dictionary/controllers/write_data_cubit/write_data_state.dart';
 import 'package:my_dictionary/model/word_model.dart';
 
 class WriteDataCubit extends Cubit<WriteDataState> {
   WriteDataCubit() : super(WriteDataInitial());
 
-  final Box _box = Hive.box(HiveKeys.wordsBox);
+  Box<WordModel> get _box => Hive.box<WordModel>(HiveKeys.wordsBox);
   String text = '';
   bool isArabic = true;
-  int colorCode = 0XFF4A7A3;
+  int colorCode = 0XFF4A47A3;
 
-  void updateText(String text) => this.text = text;
+  void updateText(String text) {
+    this.text = text;
+    emit(UpdateTextState());
+  }
 
-  void updateIsArabic(bool isArabic) => this.isArabic = isArabic;
+  void updateIsArabic(bool isArabic) {
+    this.isArabic = isArabic;
+    emit(UpdateIsArabicState());
+  }
 
-  void updateColorCode(int colorCode) => this.colorCode = colorCode;
+  void updateColorCode(int colorCode) {
+    this.colorCode = colorCode;
+    emit(UpdateColorState());
+  }
 
   void addWord() {
     _tryAndCatchBlock(() async {

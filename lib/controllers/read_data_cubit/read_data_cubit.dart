@@ -1,14 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:my_dictionary/constants/app_strings.dart';
-import 'package:my_dictionary/constants/hive_keys.dart';
+import 'package:my_dictionary/core/constants/app_strings.dart';
+import 'package:my_dictionary/core/constants/hive_keys.dart';
 import 'package:my_dictionary/controllers/read_data_cubit/read_data_state.dart';
 import 'package:my_dictionary/model/word_model.dart';
 
 class ReadDataCubit extends Cubit<ReadDataState> {
   ReadDataCubit() : super(ReadDataInitial());
 
-  final Box _box = Hive.box(HiveKeys.wordsBox);
+  Box<WordModel> get _box => Hive.box<WordModel>(HiveKeys.wordsBox);
   LanguageFilter languageFilter = LanguageFilter.allWords;
   SortedBy sortedBy = SortedBy.time;
   SortingType sortingType = SortingType.descending;
