@@ -25,8 +25,8 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(create: (context) => ReadDataCubit()..getWords()),
         BlocProvider(create: (context) => WriteDataCubit()),
-        BlocProvider(create: (context) => ReadDataCubit()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

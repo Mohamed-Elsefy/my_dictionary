@@ -9,8 +9,10 @@ abstract class AppSpacing {
   // Vertical spacing
   static const SizedBox v_8 = SizedBox(height: 8);
   static const SizedBox v_16 = SizedBox(height: 16);
+  static const SizedBox v_26 = SizedBox(height: 26);
 
   // Horizontal spacing
   static const SizedBox h_8 = SizedBox(width: 8);
   static const SizedBox h_16 = SizedBox(width: 16);
+  static const SizedBox h_26 = SizedBox(width: 26);
 }

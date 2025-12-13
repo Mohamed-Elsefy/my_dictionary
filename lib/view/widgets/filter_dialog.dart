@@ -31,19 +31,21 @@ class FilterDialog extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppRadius.r_10),
               color: AppColors.black,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _languageFilter(context, readCubit),
-                AppSpacing.v_16,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _languageFilter(context, readCubit),
+                  AppSpacing.v_16,
 
-                _sortedByFilter(context, readCubit),
-                AppSpacing.v_16,
+                  _sortedByFilter(context, readCubit),
+                  AppSpacing.v_16,
 
-                _sortingType(context, readCubit),
-                AppSpacing.v_16,
-              ],
+                  _sortingType(context, readCubit),
+                  AppSpacing.v_16,
+                ],
+              ),
             ),
           );
         },
