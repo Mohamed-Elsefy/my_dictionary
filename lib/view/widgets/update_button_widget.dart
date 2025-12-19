@@ -3,8 +3,8 @@ import 'package:my_dictionary/core/constants/app_colors.dart';
 import 'package:my_dictionary/core/constants/app_radius.dart';
 import 'package:my_dictionary/core/constants/app_size.dart';
 
-class UpdateWordButtonWidget extends StatelessWidget {
-  const UpdateWordButtonWidget({
+class UpdateButtonWidget extends StatelessWidget {
+  const UpdateButtonWidget({
     super.key,
     required this.colorCode,
     required this.onPressed,
@@ -22,8 +22,10 @@ class UpdateWordButtonWidget extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.r_10),
         ),
+        iconColor: AppColors.background,
+        iconSize: AppSize.s_22,
       ),
-      child: const Icon(Icons.add, color: AppColors.black, size: AppSize.s_25),
+      child: const Icon(Icons.add),
     );
   }
 }

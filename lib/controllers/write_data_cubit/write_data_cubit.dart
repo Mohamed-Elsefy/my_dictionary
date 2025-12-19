@@ -1,88 +1,100 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive/hive.dart';
-import 'package:my_dictionary/core/constants/app_strings.dart';
-import 'package:my_dictionary/core/constants/hive_keys.dart';
 import 'package:my_dictionary/controllers/write_data_cubit/write_data_state.dart';
-import 'package:my_dictionary/model/word_model.dart';
+import 'package:my_dictionary/core/services/hive_service.dart';
+import 'package:my_dictionary/data/models/word_model.dart';
 
 class WriteDataCubit extends Cubit<WriteDataState> {
-  WriteDataCubit() : super(WriteDataInitial());
+  WriteDataCubit(this._hive) : super(WriteDataInitial());
 
-  Box<WordModel> get _box => Hive.box<WordModel>(HiveKeys.wordsBox);
-  String text = '';
-  bool isArabic = true;
-  int colorCode = 0XFF4A47A3;
+  final HiveService _hive;
 
-  void updateText(String text) {
-    this.text = text;
-    emit(UpdateTextState());
-  }
+  // --------------------------------------------------
+  // Public API (Write actions)
 
-  void updateIsArabic(bool isArabic) {
-    this.isArabic = isArabic;
-    emit(UpdateIsArabicState());
-  }
-
-  void updateColorCode(int colorCode) {
-    this.colorCode = colorCode;
-    emit(UpdateColorState());
-  }
-
-  void addWord() {
-    _tryAndCatchBlock(() async {
-      final word = WordModel(
-        text: text,
-        isArabic: isArabic,
-        colorCode: colorCode,
-      );
-      await _box.add(word);
+  Future<void> addWord(WordModel word) async {
+    await _execute(() async {
+      await _hive.add(word);
     });
   }
 
-  void deleteWord(int key) {
-    _tryAndCatchBlock(() async {
-      await _box.delete(key);
+  Future<void> updateWord(int key, WordModel updated) async {
+    await _execute(() async {
+      await _hive.put(key, updated);
     });
   }
 
-  void addSimilarWord(int key) {
-    _updateWord(key, (w) => w.addSimilarWord(text, isArabic));
+  Future<void> deleteWord(int key) async {
+    await _execute(() async {
+      await _hive.delete(key);
+    });
   }
 
-  void deleteSimilarWord(int key, int index, bool isArabic) {
-    _updateWord(key, (w) => w.deleteSimilarWord(index, isArabic));
+  Future<void> addSimilarWord({
+    required int key,
+    required String text,
+    required bool isArabic,
+  }) async {
+    await _execute(() async {
+      final word = _requireWord(key);
+      final updated = word.addSimilarWord(text, isArabic);
+      await _hive.put(key, updated);
+    });
   }
 
-  void addExample(int key) {
-    _updateWord(key, (w) => w.addExample(text, isArabic));
+  Future<void> deleteSimilarWord({
+    required int key,
+    required int index,
+    required bool isArabic,
+  }) async {
+    await _execute(() async {
+      final word = _requireWord(key);
+      final updated = word.deleteSimilarWord(index, isArabic);
+      await _hive.put(key, updated);
+    });
   }
 
-  void deleteExample(int key, int index, bool isArabic) {
-    _updateWord(key, (w) => w.deleteExample(index, isArabic));
+  Future<void> addExample({
+    required int key,
+    required String example,
+    required bool isArabic,
+  }) async {
+    await _execute(() async {
+      final word = _requireWord(key);
+      final updated = word.addExample(example, isArabic);
+      await _hive.put(key, updated);
+    });
   }
 
-  Future<void> _tryAndCatchBlock(
-    Future<void> Function() methodToExecute,
-  ) async {
+  Future<void> deleteExample({
+    required int key,
+    required int index,
+    required bool isArabic,
+  }) async {
+    await _execute(() async {
+      final word = _requireWord(key);
+      final updated = word.deleteExample(index, isArabic);
+      await _hive.put(key, updated);
+    });
+  }
+
+  // --------------------------------------------------
+  // Internal helpers
+
+  WordModel _requireWord(int key) {
+    final word = _hive.get(key);
+    if (word == null) {
+      throw Exception('Word not found for key: $key');
+    }
+    return word;
+  }
+
+  Future<void> _execute(Future<void> Function() action) async {
     emit(WriteDataLoading());
     try {
-      await methodToExecute();
+      await action();
       emit(WriteDataSuccess());
-    } catch (_) {
-      emit(WriteDataFailure(message: AppStrings.thereIsProblem));
+    } catch (e) {
+      emit(WriteDataFailure(e.toString()));
     }
-  }
-
-  Future<void> _updateWord(
-    int key,
-    WordModel Function(WordModel oldWord) updateFn,
-  ) async {
-    _tryAndCatchBlock(() async {
-      final WordModel? oldWord = _box.get(key);
-      if (oldWord == null) throw Exception();
-
-      final updatedWord = updateFn(oldWord);
-      await _box.put(key, updatedWord);
-    });
   }
 }

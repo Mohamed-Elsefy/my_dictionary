@@ -1,19 +1,31 @@
-import 'package:my_dictionary/model/word_model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:my_dictionary/data/models/word_model.dart';
 
-abstract class ReadDataState {}
+abstract class ReadDataState extends Equatable {
+  const ReadDataState();
 
-final class ReadDataInitial extends ReadDataState {}
-
-final class ReadDataLoading extends ReadDataState {}
-
-final class ReadDataSuccess extends ReadDataState {
-  final List<MapEntry<int, WordModel>> words;
-
-  ReadDataSuccess({required this.words});
+  @override
+  List<Object?> get props => [];
 }
 
-final class ReadDataFailure extends ReadDataState {
+class ReadDataInitial extends ReadDataState {}
+
+class ReadDataLoading extends ReadDataState {}
+
+class ReadDataSuccess extends ReadDataState {
+  final List<MapEntry<int, WordModel>> words;
+
+  const ReadDataSuccess(this.words);
+
+  @override
+  List<Object?> get props => [words];
+}
+
+class ReadDataFailure extends ReadDataState {
   final String message;
 
-  ReadDataFailure({required this.message});
+  const ReadDataFailure(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

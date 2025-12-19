@@ -1,81 +1,115 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive_flutter/adapters.dart';
-import 'package:my_dictionary/core/constants/app_strings.dart';
-import 'package:my_dictionary/core/constants/hive_keys.dart';
 import 'package:my_dictionary/controllers/read_data_cubit/read_data_state.dart';
-import 'package:my_dictionary/model/word_model.dart';
+import 'package:my_dictionary/core/services/hive_service.dart';
+import 'package:my_dictionary/data/models/word_model.dart';
+
+enum SortType { newest, oldest, alphabetical }
+
+enum LanguageFilter { all, arabic, english }
 
 class ReadDataCubit extends Cubit<ReadDataState> {
-  ReadDataCubit() : super(ReadDataInitial());
+  ReadDataCubit(this._hive) : super(ReadDataInitial());
 
-  Box<WordModel> get _box => Hive.box<WordModel>(HiveKeys.wordsBox);
-  LanguageFilter languageFilter = LanguageFilter.allWords;
-  SortedBy sortedBy = SortedBy.time;
-  SortingType sortingType = SortingType.descending;
+  final HiveService _hive;
 
-  void updateLanguageFilter(LanguageFilter languageFilter) {
-    this.languageFilter = languageFilter;
-    getWords();
-  }
+  // --------------------------------------------------
+  // Filters & Sort (in-memory)
 
-  void updateSortedBy(SortedBy sortedBy) {
-    this.sortedBy = sortedBy;
-    getWords();
-  }
+  SortType _sortType = SortType.newest;
+  LanguageFilter _languageFilter = LanguageFilter.all;
+  String _searchQuery = '';
 
-  void updateSortingType(SortingType sortingType) {
-    this.sortingType = sortingType;
-    getWords();
-  }
+  // --------------------------------------------------
+  // Public API
 
-  void getWords() {
+  SortType get sortType => _sortType;
+
+  LanguageFilter get languageFilter => _languageFilter;
+
+  String get searchQuery => _searchQuery;
+
+  Future<void> loadWords() async {
     emit(ReadDataLoading());
-
     try {
-      final wordsMap = _box.toMap().cast<int, WordModel>();
-      List<MapEntry<int, WordModel>> wordsEntries = wordsMap.entries.toList();
-
-      wordsEntries = _filter(wordsEntries);
-      wordsEntries = _sort(wordsEntries);
-
-      emit(ReadDataSuccess(words: wordsEntries));
+      _emitProcessedWords();
     } catch (e) {
-      emit(ReadDataFailure(message: AppStrings.thereIsProblem));
+      emit(ReadDataFailure(e.toString()));
     }
   }
 
-  List<MapEntry<int, WordModel>> _filter(List<MapEntry<int, WordModel>> list) {
-    if (languageFilter == LanguageFilter.allWords) return list;
+  void setSortType(SortType type) {
+    _sortType = type;
+    _emitProcessedWords();
+  }
 
-    return list.where((entry) {
-      final w = entry.value;
-      if (languageFilter == LanguageFilter.arabicOnly && w.isArabic) {
-        return true;
+  void setLanguageFilter(LanguageFilter filter) {
+    _languageFilter = filter;
+    _emitProcessedWords();
+  }
+
+  void setSearchQuery(String query) {
+    _searchQuery = query.trim();
+    _emitProcessedWords();
+  }
+
+  void clearFilters() {
+    _sortType = SortType.newest;
+    _languageFilter = LanguageFilter.all;
+    _searchQuery = '';
+    _emitProcessedWords();
+  }
+
+  // --------------------------------------------------
+  // Core processing
+
+  void _emitProcessedWords() {
+    final boxMap = _hive.getAll();
+
+    final entries = boxMap.entries.toList();
+    final filtered = _applyFilters(entries);
+    final sorted = _applySort(filtered);
+
+    emit(ReadDataSuccess(sorted));
+  }
+
+  List<MapEntry<int, WordModel>> _applyFilters(
+    List<MapEntry<int, WordModel>> words,
+  ) {
+    return words.where((entry) {
+      final word = entry.value;
+
+      if (_languageFilter == LanguageFilter.arabic && !word.isArabic) {
+        return false;
       }
-      if (languageFilter == LanguageFilter.englishOnly && !w.isArabic) {
-        return true;
+      if (_languageFilter == LanguageFilter.english && word.isArabic) {
+        return false;
       }
-      return false;
+
+      if (_searchQuery.isNotEmpty) {
+        return word.text.toLowerCase().contains(_searchQuery.toLowerCase());
+      }
+
+      return true;
     }).toList();
   }
 
-  List<MapEntry<int, WordModel>> _sort(List<MapEntry<int, WordModel>> list) {
-    if (sortedBy == SortedBy.time) {
-      list.sort((a, b) => a.key.compareTo(b.key));
-    } else {
-      list.sort((a, b) => a.value.text.length.compareTo(b.value.text.length));
+  List<MapEntry<int, WordModel>> _applySort(
+    List<MapEntry<int, WordModel>> words,
+  ) {
+    switch (_sortType) {
+      case SortType.oldest:
+        words.sort((a, b) => a.key.compareTo(b.key));
+
+      case SortType.alphabetical:
+        words.sort(
+          (a, b) =>
+              a.value.text.toLowerCase().compareTo(b.value.text.toLowerCase()),
+        );
+
+      case SortType.newest:
+        words.sort((a, b) => b.key.compareTo(a.key));
     }
 
-    if (sortingType == SortingType.descending) {
-      return list.reversed.toList();
-    }
-
-    return list;
+    return words;
   }
 }
-
-enum LanguageFilter { arabicOnly, englishOnly, allWords }
-
-enum SortedBy { time, wordLength }
-
-enum SortingType { ascending, descending }

@@ -1,19 +1,22 @@
-class WriteDataState {}
+import 'package:equatable/equatable.dart';
 
-final class WriteDataInitial extends WriteDataState {}
+abstract class WriteDataState extends Equatable {
+  const WriteDataState();
 
-final class WriteDataLoading extends WriteDataState {}
-
-final class WriteDataSuccess extends WriteDataState {}
-
-final class WriteDataFailure extends WriteDataState {
-  final String message;
-
-  WriteDataFailure({required this.message});
+  @override
+  List<Object?> get props => [];
 }
 
-final class UpdateColorState extends WriteDataState {}
+class WriteDataInitial extends WriteDataState {}
 
-final class UpdateIsArabicState extends WriteDataState {}
+class WriteDataLoading extends WriteDataState {}
 
-final class UpdateTextState extends WriteDataState {}
+class WriteDataSuccess extends WriteDataState {}
+
+class WriteDataFailure extends WriteDataState {
+  final String message;
+  const WriteDataFailure(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}

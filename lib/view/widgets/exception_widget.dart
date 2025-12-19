@@ -2,27 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:my_dictionary/core/constants/app_colors.dart';
 import 'package:my_dictionary/core/constants/app_size.dart';
 import 'package:my_dictionary/core/constants/app_spacing.dart';
+import 'package:my_dictionary/core/utils/extentions.dart';
 
-class ExeptionWidget extends StatelessWidget {
-  const ExeptionWidget({
+class ExceptionWidget extends StatelessWidget {
+  const ExceptionWidget({
     super.key,
     required this.iconData,
-    required this.message,
+    required this.text,
   });
 
   final IconData iconData;
-  final String message;
+  final String text;
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(iconData, color: AppColors.white, size: AppSize.s_50),
+        Icon(iconData, size: AppSize.s_100, color: AppColors.primary),
         AppSpacing.v_8,
-        Text(message, 
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.titleLarge),
+        Text(
+          text,
+          style: context.textTheme.titleLarge,
+          textAlign: TextAlign.center,
+        ),
+        AppSpacing.v_40,
       ],
     );
   }
