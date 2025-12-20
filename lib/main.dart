@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:my_dictionary/core/constants/app_strings.dart';
 import 'package:my_dictionary/core/services/service_locator.dart';
 import 'package:my_dictionary/core/themes/app_theme.dart';
 import 'package:my_dictionary/controllers/read_data_cubit/read_data_cubit.dart';
@@ -46,6 +47,7 @@ class MyDictionaryApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light,
+        title: AppStrings.myDictionary,
         home: const HomeScreen(),
       ),
     );

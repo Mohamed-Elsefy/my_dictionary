@@ -83,7 +83,7 @@ class _UpdateWordDialogState extends State<UpdateWordDialog> {
               AppSpacing.v_12,
 
               TextFormWidget(
-                lable: AppStrings.newWord,
+                lable: AppStrings.updateWord,
                 controller: _textController,
                 isArabic: _isArabic,
                 formKey: _formKey,

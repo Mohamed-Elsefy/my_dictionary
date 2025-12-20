@@ -7,14 +7,19 @@ abstract class Validator {
     }
 
     final text = value.trim();
-    final arabicRegex = RegExp(r'^[\u0600-\u06FF\s]+$');
-    final englishRegex = RegExp(r'^[a-zA-Z\s]+$');
+    final lettersOnly = text.replaceAll(RegExp(r'[^a-zA-Z\u0600-\u06FF]'), '');
+    final arabicLetters = RegExp(r'^[\u0600-\u06FF]+$');
+    final englishLetters = RegExp(r'^[a-zA-Z]+$');
 
-    if (isArabic && !arabicRegex.hasMatch(text)) {
+    if (lettersOnly.isEmpty) {
+      return AppStrings.thisFieldRequired;
+    }
+
+    if (isArabic && !arabicLetters.hasMatch(lettersOnly)) {
       return AppStrings.pleaseEnterArabic;
     }
 
-    if (!isArabic && !englishRegex.hasMatch(text)) {
+    if (!isArabic && !englishLetters.hasMatch(lettersOnly)) {
       return AppStrings.pleaseEnterEnglis;
     }
 
